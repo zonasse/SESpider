@@ -1,13 +1,25 @@
 import scrapy
 import json
-import pickle
 from SESpider.items import DoubanMovieItem,DoubanMovieItemLoader
 
 class DoubanMovieSpider(scrapy.Spider):
     name = "DoubanMovieSpider"
     allowed_domains = ["movie.douban.com"]
     start_urls = ['https://movie.douban.com/tag/#/']
+    custom_settings = {
+        'DOWNLOADER_MIDDLEWARES': {
+            # 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+            'SESpider.middlewares.ProcessAllExceptionMiddleware': 120,
+            'SESpider.middlewares.RandomProxyMiddleware': 100,
+        },
+        'DOWNLOAD_DELAY': 1,  # 延时最低为2s
+        'AUTOTHROTTLE_ENABLED': True,  # 启动[自动限速]
+        'AUTOTHROTTLE_DEBUG': True,  # 开启[自动限速]的debug
+        'AUTOTHROTTLE_MAX_DELAY': 10,  # 设置最大下载延时
+        'DOWNLOAD_TIMEOUT': 15,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 4  # 限制对该网站的并发请求数
 
+    }
     def parse(self, response):
         for index in range(0,100,10):
             movie_url = 'https://movie.douban.com/j/new_search_subjects?sort=T&range=0,10&tags=&start={}'.format(index)
@@ -19,23 +31,23 @@ class DoubanMovieSpider(scrapy.Spider):
         for movie_data in movie_datas:
             doubanMovieItemLoader = DoubanMovieItemLoader(item=DoubanMovieItem(),response=response)
             movie_directors = ",".join(movie_data['directors'])
-            movie_rate = movie_data['rate']
-            movie_star = movie_data['star']
+            # movie_rate = movie_data['rate']
+            # movie_star = movie_data['star']
             movie_title = movie_data['title']
             movie_url = movie_data['url']
             movie_casts = ",".join(movie_data['casts'])
             movie_cover = movie_data['cover']
             movie_id = int(movie_data['id'])
             doubanMovieItemLoader.add_value("movie_directors",movie_directors)
-            doubanMovieItemLoader.add_value("movie_rate",movie_rate)
-            doubanMovieItemLoader.add_value("movie_star",movie_star)
+            # doubanMovieItemLoader.add_value("movie_rate",movie_rate)
+            # doubanMovieItemLoader.add_value("movie_star",movie_star)
             doubanMovieItemLoader.add_value("movie_title",movie_title)
             doubanMovieItemLoader.add_value("movie_url",movie_url)
             doubanMovieItemLoader.add_value("movie_casts",movie_casts)
             doubanMovieItemLoader.add_value("movie_cover",movie_cover)
             doubanMovieItemLoader.add_value("movie_id",movie_id)
             doubanmovieItem = doubanMovieItemLoader.load_item()
-            # yield doubanmovieItem
+
             if movie_url:
                 yield scrapy.Request(movie_url,callback=self.parse_detail,meta={'movie_id':movie_id,'item':doubanmovieItem})
 
