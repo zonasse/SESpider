@@ -154,6 +154,9 @@ class ProcessAllExceptionMiddleware(object):
 
 class RandomProxyMiddleware():
     def process_request(self,request,spider):
+        # todo 此处获取随机ip改为在异常中获取
         random_ip = ip_tool.get_random_ip()
-        print('random_ip'+random_ip)
+        # print('random_ip'+random_ip)
+
         request.meta['proxy'] = random_ip
+

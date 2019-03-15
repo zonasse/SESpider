@@ -6,7 +6,7 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 
-class DoubanMoviePipeline(object):
+class MoviePipeline(object):
     def process_item(self, item, spider):
         item.save_to_es()
         return item
