@@ -11,7 +11,7 @@ class DoubanMovieSpider(scrapy.Spider):
         'DOWNLOADER_MIDDLEWARES': {
             'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
             'SESpider.middlewares.ProcessAllExceptionMiddleware': 110,
-            'SESpider.middlewares.RandomProxyMiddleware': 100,
+            'SESpider.middlewares.RandomProxyMiddleware': None,
         },
         "USER_AGENT": USER_AGENT,
         'DOWNLOAD_DELAY': 1,  # 延时最低为2s
@@ -23,7 +23,7 @@ class DoubanMovieSpider(scrapy.Spider):
 
     }
     def parse(self, response):
-        for index in range(0,100,10):
+        for index in range(0,500,10):
             movie_url = 'https://movie.douban.com/j/new_search_subjects?sort=T&range=0,10&tags=&start={}'.format(index)
             yield scrapy.Request(movie_url,callback=self.parse_main,dont_filter=False)
 

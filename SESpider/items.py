@@ -25,8 +25,7 @@ def generate_suggests(index, info_tuple):
     for text, weight in info_tuple:
         if text:
             # 调用es的analyze接口分析字符串
-            words = elastic.indices.analyze(index=index, analyzer="ik_max_word", params={'filter': ["lowercase"]},
-                                       body=text)
+            words = elastic.indices.analyze(index=index, analyzer="ik_max_word", params={'filter': ["lowercase"]},body=text)
             anylyzed_words = set([r["token"] for r in words["tokens"] if len(r["token"]) > 1])
             new_words = anylyzed_words - used_words
         else:

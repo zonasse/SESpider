@@ -93,7 +93,7 @@ class ProcessAllExceptionMiddleware(object):
                 match_obj = re.findall(r'http://(.+?)\:',request.meta['proxy'])
                 if match_obj:
                     ip = match_obj[0]
-                    ip_tool.delete_ip(ip)
+                    # ip_tool.delete_ip(ip)
                     return request
             # 在日志中打印异常类型
             print('Got exception: %s' % (exception))
