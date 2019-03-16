@@ -12,6 +12,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from scrapy.crawler import CrawlerProcess
 from SESpider.spiders import DoubanMovieSpider,DyttMovieSpider,ProxyTestSpider
 from scrapy.utils.project import get_project_settings
+
 process = CrawlerProcess(get_project_settings())
 process.crawl(DoubanMovieSpider.DoubanMovieSpider)
 process.crawl(DyttMovieSpider.DyttMovieSpider)
